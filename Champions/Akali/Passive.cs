@@ -1,16 +1,17 @@
-using LeagueSandbox.GameServer.Logic.GameObjects;
-using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
+using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
+using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
+using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class AkaliTwinDisciplines : GameScript
+    public class AkaliTwinDisciplines : IGameScript
     {
         public void OnActivate(Champion owner)
         {
-            var bonusAd = owner.GetStats().AttackDamage.Total - owner.GetStats().AttackDamage.BaseValue;
-            owner.GetStats().SpellVamp.PercentBonus = 6 + bonusAd % 6;
+            var bonusAd = owner.Stats.AttackDamage.Total - owner.Stats.AttackDamage.BaseValue;
+            owner.Stats.SpellVamp.PercentBonus = 6 + bonusAd % 6;
         }
 
         public void OnDeactivate(Champion owner)

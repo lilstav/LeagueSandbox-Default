@@ -1,13 +1,11 @@
 using LeagueSandbox.GameServer.Logic.API;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
+using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
 
 namespace Spells
 {
-    public class Recall : IGameScript
+    public class Recall : GameScript
     {
         public void OnStartCasting(Champion owner, Spell spell, AttackableUnit target)
         {
@@ -15,13 +13,11 @@ namespace Spells
 
         public void OnFinishCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            var visualBuff = ApiFunctionManager.AddBuffHudVisual("Recall", 8.0f, 1, owner);
-            var addParticle = ApiFunctionManager.AddParticleTarget(owner, "TeleportHome.troy", owner);
-            ApiFunctionManager.CreateTimer(8.0f, () =>
+            if (!owner.IsRecalling)
             {
-                ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
-                owner.Recall(owner);
-            });
+                owner._canRecall = true;
+                owner.Recall(owner, 8.0f);
+            }
         }
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)

@@ -1,23 +1,21 @@
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
-using LeagueSandbox.GameServer.Logic.GameObjects.Stats;
-using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
+using LeagueSandbox.GameServer.Logic.GameObjects;
+using LeagueSandbox.GameServer.Logic.Scripting;
 
 namespace LuluWBuff
 {
-    internal class LuluWBuff : IBuffGameScript
+    internal class LuluWBuff : BuffGameScript
     {
-        private StatsModifier _statMod;
+        private ChampionStatModifier _statMod;
 
-        public void OnActivate(ObjAiBase unit, Spell ownerSpell)
+        public void OnActivate(ObjAIBase unit, Spell ownerSpell)
         {
-            var ap = ownerSpell.Owner.Stats.AbilityPower.Total * 0.001;
-            _statMod = new StatsModifier();
+            var ap = ownerSpell.Owner.GetStats().AbilityPower.Total * 0.001;
+            _statMod = new ChampionStatModifier();
             _statMod.MoveSpeed.PercentBonus = _statMod.MoveSpeed.PercentBonus + 0.3f + (float)ap;
             unit.AddStatModifier(_statMod);
         }
 
-        public void OnDeactivate(ObjAiBase unit)
+        public void OnDeactivate(ObjAIBase unit)
         {
             unit.RemoveStatModifier(_statMod);
         }

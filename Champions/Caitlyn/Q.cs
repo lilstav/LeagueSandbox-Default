@@ -1,14 +1,12 @@
 using System;
 using System.Numerics;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class CaitlynPiltoverPeacemaker : IGameScript
+    public class CaitlynPiltoverPeacemaker : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -35,7 +33,7 @@ namespace Spells
         {
             var reduc = Math.Min(projectile.ObjectsHit.Count, 5);
             var baseDamage = new[] {20, 60, 100, 140, 180}[spell.Level - 1] +
-                             1.3f * owner.Stats.AttackDamage.Total;
+                             1.3f * owner.GetStats().AttackDamage.Total;
             var damage = baseDamage * (1 - reduc / 10);
             target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_PHYSICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
         }

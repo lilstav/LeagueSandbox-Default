@@ -1,14 +1,13 @@
+using System;
 using System.Numerics;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class AkaliShadowDance : IGameScript
+    public class AkaliShadowDance : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -37,9 +36,8 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var bonusAd = owner.Stats.AttackDamage.Total - owner.Stats.AttackDamage.BaseValue;
-            var ap = owner.Stats.AbilityPower.Total * 0.9f;
-            var damage = 200 + spell.Level * 150 + bonusAd + ap;
+            var ap = owner.GetStats().AbilityPower.Total * 0.5f;
+            var damage = 25 + spell.Level * 75 + ap;
             target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL,
                 DamageSource.DAMAGE_SOURCE_SPELL, false);
         }

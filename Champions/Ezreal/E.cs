@@ -1,15 +1,12 @@
 using System.Numerics;
-using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects;
+using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class EzrealArcaneShift : IGameScript
+    public class EzrealArcaneShift : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -44,10 +41,10 @@ namespace Spells
             ApiFunctionManager.AddParticleTarget(owner, "Ezreal_arcaneshift_flash.troy", owner);
             AttackableUnit target2 = null;
             var units = ApiFunctionManager.GetUnitsInRange(owner, 700, true);
-            float distance = 700;
             foreach (var value in units)
             {
-                if (owner.Team != value.Team && value is ObjAiBase)
+                float distance = 700;
+                if (owner.Team != value.Team)
                 {
                     if (Vector2.Distance(new Vector2(trueCoords.X, trueCoords.Y), new Vector2(value.X, value.Y)) <=
                         distance)
@@ -61,7 +58,7 @@ namespace Spells
 
             if (target2 != null)
             {
-                if (!((GameObject) target2 is BaseTurret))
+                if (!ApiFunctionManager.UnitIsTurret(target2))
                 {
                     spell.AddProjectileTarget("EzrealArcaneShiftMissile", target2);
                 }
@@ -70,9 +67,9 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            target.TakeDamage(owner, 25f + spell.Level * 50f + owner.Stats.AbilityPower.Total * 0.75f,
+            target.TakeDamage(owner, 25f + spell.Level * 50f + owner.GetStats().AbilityPower.Total * 0.75f,
                 DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
-            projectile.SetToRemove();
+            projectile.setToRemove();
         }
 
         public void OnUpdate(double diff)

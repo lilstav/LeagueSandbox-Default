@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class AkaliSmokeBomb : IGameScript
+    public class AkaliSmokeBomb : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -23,13 +21,13 @@ namespace Spells
 
         public void OnFinishCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            var smokeBomb = ApiFunctionManager.AddParticle(owner, "akali_smoke_bomb_tar.troy", owner.X, owner.Y);
+            Particle smokeBomb = ApiFunctionManager.AddParticle(owner, "akali_smoke_bomb_tar.troy", owner.X, owner.Y);
             /*
              * TODO: Display green border (akali_smoke_bomb_tar_team_green.troy) for the own team,
              * display red border (akali_smoke_bomb_tar_team_red.troy) for the enemy team
              * Currently only displaying the green border for everyone
-            */
-            var smokeBombBorder = ApiFunctionManager.AddParticle(owner, "akali_smoke_bomb_tar_team_green.troy", owner.X, owner.Y);
+            */        
+            Particle smokeBombBorder = ApiFunctionManager.AddParticle(owner, "akali_smoke_bomb_tar_team_green.troy", owner.X, owner.Y);
             //TODO: Add invisibility
 
             ApiFunctionManager.CreateTimer(8.0f, () =>

@@ -1,44 +1,42 @@
-﻿using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
-using LeagueSandbox.GameServer.Logic.GameObjects.Stats;
-using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
+﻿using LeagueSandbox.GameServer.Logic.GameObjects;
+using LeagueSandbox.GameServer.Logic.Scripting;
 
 namespace LuluR
 {
-    internal class LuluR : IBuffGameScript
+    internal class LuluR : BuffGameScript
     {
-        private StatsModifier _statMod;
+        private ChampionStatModifier _statMod;
         private float _healthBefore;
         private float _meantimeDamage;
         private float _healthNow;
         private float _healthBonus;
 
-        public void OnActivate(ObjAiBase unit, Spell ownerSpell)
+        public void OnActivate(ObjAIBase unit, Spell ownerSpell)
         {
-            _statMod = new StatsModifier();
+            _statMod = new ChampionStatModifier();
             _statMod.Size.PercentBonus = _statMod.Size.PercentBonus + 1;
-            _healthBefore = unit.Stats.CurrentHealth;
+            _healthBefore = unit.GetStats().CurrentHealth;
             _healthBonus = 150 + 150 * ownerSpell.Level;
             _statMod.HealthPoints.BaseBonus = _statMod.HealthPoints.BaseBonus + 150 + 150 * ownerSpell.Level;
-            unit.Stats.CurrentHealth = unit.Stats.CurrentHealth + 150 + 150 * ownerSpell.Level;
+            unit.GetStats().CurrentHealth = unit.GetStats().CurrentHealth + 150 + 150 * ownerSpell.Level;
             unit.AddStatModifier(_statMod);
         }
 
-        public void OnDeactivate(ObjAiBase unit)
+        public void OnDeactivate(ObjAIBase unit)
         {
-            _healthNow = unit.Stats.CurrentHealth - _healthBonus;
+            _healthNow = unit.GetStats().CurrentHealth - _healthBonus;
             _meantimeDamage = _healthBefore - _healthNow;
-            var bonusDamage = _healthBonus - _meantimeDamage;
+            float bonusDamage = _healthBonus - _meantimeDamage;
             unit.RemoveStatModifier(_statMod);
-            if (unit.Stats.CurrentHealth > unit.Stats.HealthPoints.Total)
+            if (unit.GetStats().CurrentHealth > unit.GetStats().HealthPoints.Total)
             {
-                unit.Stats.CurrentHealth = unit.Stats.CurrentHealth - bonusDamage;
+                unit.GetStats().CurrentHealth = unit.GetStats().CurrentHealth - bonusDamage;
             }
         }
 
         public void OnUpdate(double diff)
         {
-
+            
         }
     }
 }

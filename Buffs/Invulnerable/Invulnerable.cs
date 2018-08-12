@@ -1,20 +1,19 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
+using LeagueSandbox.GameServer.Logic.Scripting;
 using LeagueSandbox.GameServer.Logic.API;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
-using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Invulnerable
 {
-    internal class Invulnerable : IBuffGameScript
+    internal class Invulnerable : BuffGameScript
     {
-        private UnitCrowdControl _crowd = new UnitCrowdControl(CrowdControlType.INVULNERABLE);
+        private UnitCrowdControl _crowd = new UnitCrowdControl(CrowdControlType.Invulnerable);
 
-        public void OnActivate(ObjAiBase unit, Spell ownerSpell)
+        public void OnActivate(ObjAIBase unit, Spell ownerSpell)
         {
             unit.ApplyCrowdControl(_crowd);
         }
 
-        public void OnDeactivate(ObjAiBase unit)
+        public void OnDeactivate(ObjAIBase unit)
         {
             unit.RemoveCrowdControl(_crowd);
         }

@@ -1,14 +1,12 @@
 using System.Numerics;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class BlindingDart : IGameScript
+    public class BlindingDart : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -34,16 +32,16 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var ap = owner.Stats.AbilityPower.Total * 0.8f;
+            var ap = owner.GetStats().AbilityPower.Total * 0.8f;
             var damage = 35 + spell.Level * 45 + ap;
             target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
-            var time = 1.25f + 0.25f * spell.Level;
-            var buff = ((ObjAiBase) target).AddBuffGameScript("Blind", "Blind", spell);
-            var visualBuff = ApiFunctionManager.AddBuffHudVisual("Blind", time, 1, (ObjAiBase) target);
+            float time = 1.25f + 0.25f * spell.Level;
+            var buff = ((ObjAIBase) target).AddBuffGameScript("Blind", "Blind", spell);
+            var visualBuff = ApiFunctionManager.AddBuffHUDVisual("Blind", time, 1, (ObjAIBase) target);
             ApiFunctionManager.CreateTimer(time, () =>
             {
-                ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
-                ((ObjAiBase) target).RemoveBuffGameScript(buff);
+                ApiFunctionManager.RemoveBuffHUDVisual(visualBuff);
+                ((ObjAIBase) target).RemoveBuffGameScript(buff);
             });
         }
 

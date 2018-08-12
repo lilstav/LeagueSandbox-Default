@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class NullLance : IGameScript
+    public class NullLance : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -29,10 +27,10 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var ap = owner.Stats.AbilityPower.Total * 0.7f;
+            var ap = owner.GetStats().AbilityPower.Total * 0.7f;
             var damage = 30 + spell.Level * 50 + ap;
 
-            if (target != null && !target.IsDead)
+            if (target != null && !ApiFunctionManager.IsDead(target))
             {
                 target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL,
                     false);
@@ -41,7 +39,7 @@ namespace Spells
                 }
             }
 
-            projectile.SetToRemove();
+            projectile.setToRemove();
         }
 
         public void OnUpdate(double diff)

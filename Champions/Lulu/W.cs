@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class LuluW : IGameScript
+    public class LuluW : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -19,27 +17,27 @@ namespace Spells
 
         public void OnStartCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            spell.SpellAnimation("SPELL2", owner);
+            spell.spellAnimation("SPELL2", owner);
         }
 
         public void OnFinishCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            var champion = (Champion) target;
+            Champion champion = (Champion) target;
             if (champion.Team != owner.Team)
             {
                 spell.AddProjectileTarget("LuluWTwo", target);
             }
             else
             {
-                var p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_W_buf_02.troy", target, 1);
+                Particle p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_W_buf_02.troy", target, 1);
                 ApiFunctionManager.AddParticleTarget(owner, "Lulu_W_buf_01.troy", target, 1);
-                var time = 2.5f + 0.5f * spell.Level;
-                var buff = ((ObjAiBase) target).AddBuffGameScript("LuluWBuff", "LuluWBuff", spell);
-                var visualBuff = ApiFunctionManager.AddBuffHudVisual("LuluWBuff", time, 1, (ObjAiBase) target);
+                float time = 2.5f + 0.5f * spell.Level;
+                var buff = ((ObjAIBase) target).AddBuffGameScript("LuluWBuff", "LuluWBuff", spell);
+                var visualBuff = ApiFunctionManager.AddBuffHUDVisual("LuluWBuff", time, 1, (ObjAIBase) target);
                 ApiFunctionManager.CreateTimer(time, () =>
                 {
                     ApiFunctionManager.RemoveParticle(p);
-                    ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
+                    ApiFunctionManager.RemoveBuffHUDVisual(visualBuff);
                     owner.RemoveBuffGameScript(buff);
                 });
             }
@@ -47,22 +45,22 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var champion = (Champion) target;
-            var time = 1 + 0.25f * spell.Level;
-            var buff = ((ObjAiBase) target).AddBuffGameScript("LuluWDebuff", "LuluWDebuff", spell);
-            var visualBuff = ApiFunctionManager.AddBuffHudVisual("LuluWDebuff", time, 1, (ObjAiBase) target);
-            var model = champion.Model;
+            Champion champion = (Champion) target;
+            float time = 1 + 0.25f * spell.Level;
+            var buff = ((ObjAIBase) target).AddBuffGameScript("LuluWDebuff", "LuluWDebuff", spell);
+            var visualBuff = ApiFunctionManager.AddBuffHUDVisual("LuluWDebuff", time, 1, (ObjAIBase) target);
+            string model = champion.Model;
             ChangeModel(owner.Skin, target);
 
-            var p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_W_polymorph_01.troy", target, 1);
+            Particle p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_W_polymorph_01.troy", target, 1);
             ApiFunctionManager.CreateTimer(time, () =>
             {
                 ApiFunctionManager.RemoveParticle(p);
-                ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
+                ApiFunctionManager.RemoveBuffHUDVisual(visualBuff);
                 owner.RemoveBuffGameScript(buff);
-                ((Champion) target).Model = model;
+                ApiFunctionManager.SetChampionModel((Champion) target, model);
             });
-            projectile.SetToRemove();
+            projectile.setToRemove();
         }
 
         public void OnUpdate(double diff)
@@ -74,29 +72,19 @@ namespace Spells
             switch (skinId)
             {
                 case 0:
-                {
-                    ((Champion) target).Model = "LuluSquill";
-                }
+                    ApiFunctionManager.SetChampionModel((Champion) target, "LuluSquill");
                     break;
                 case 1:
-                {
-                    ((Champion) target).Model = "LuluCupcake";
-                }
+                    ApiFunctionManager.SetChampionModel((Champion) target, "LuluCupcake");
                     break;
                 case 2:
-                {
-                    ((Champion) target).Model = "LuluKitty";
-                }
+                    ApiFunctionManager.SetChampionModel((Champion) target, "LuluKitty");
                     break;
                 case 3:
-                {
-                    ((Champion) target).Model = "LuluDragon";
-                }
+                    ApiFunctionManager.SetChampionModel((Champion) target, "LuluDragon");
                     break;
                 case 4:
-                {
-                    ((Champion) target).Model = "LuluSnowman";
-                }
+                    ApiFunctionManager.SetChampionModel((Champion) target, "LuluSnowman");
                     break;
             }
         }

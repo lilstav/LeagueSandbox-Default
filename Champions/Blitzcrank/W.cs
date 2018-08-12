@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class Overdrive : IGameScript
+    public class Overdrive : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -19,14 +17,14 @@ namespace Spells
 
         public void OnStartCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            var p = ApiFunctionManager.AddParticleTarget(owner, "Overdrive_buf.troy", target, 1);
-            var buff = ((ObjAiBase) target).AddBuffGameScript("Overdrive", "Overdrive", spell);
-            var visualBuff = ApiFunctionManager.AddBuffHudVisual("Overdrive", 8.0f, 1, owner);
+            Particle p = ApiFunctionManager.AddParticleTarget(owner, "Overdrive_buf.troy", target, 1);
+            var buff = ((ObjAIBase) target).AddBuffGameScript("Overdrive", "Overdrive", spell);
+            var visualBuff = ApiFunctionManager.AddBuffHUDVisual("Overdrive", 8.0f, 1, owner);
             ApiFunctionManager.CreateTimer(8.0f, () =>
             {
                 ApiFunctionManager.RemoveParticle(p);
-                ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
-                ((ObjAiBase) target).RemoveBuffGameScript(buff);
+                ApiFunctionManager.RemoveBuffHUDVisual(visualBuff);
+                ((ObjAIBase) target).RemoveBuffGameScript(buff);
             });
         }
 

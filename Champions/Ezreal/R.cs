@@ -1,15 +1,13 @@
 using System;
 using System.Numerics;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class EzrealTrueshotBarrage : IGameScript
+    public class EzrealTrueshotBarrage : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -37,8 +35,8 @@ namespace Spells
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
             var reduc = Math.Min(projectile.ObjectsHit.Count, 7);
-            var bonusAd = owner.Stats.AttackDamage.Total - owner.Stats.AttackDamage.BaseValue;
-            var ap = owner.Stats.AbilityPower.Total * 0.9f;
+            var bonusAd = owner.GetStats().AttackDamage.Total - owner.GetStats().AttackDamage.BaseValue;
+            var ap = owner.GetStats().AbilityPower.Total * 0.9f;
             var damage = 200 + spell.Level * 150 + bonusAd + ap;
             target.TakeDamage(owner, damage * (1 - reduc / 10), DamageType.DAMAGE_TYPE_MAGICAL,
                 DamageSource.DAMAGE_SOURCE_SPELL, false);

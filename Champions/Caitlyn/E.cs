@@ -1,14 +1,12 @@
-﻿using System.Numerics;
-using LeagueSandbox.GameServer.Logic.API;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
+﻿using LeagueSandbox.GameServer.Logic.API;
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
+using System.Numerics;
+using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
 
 namespace Spells
 {
-    public class CaitlynEntrapment : IGameScript
+    public class CaitlynEntrapment : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -16,11 +14,6 @@ namespace Spells
 
         public void OnDeactivate(Champion owner)
         {
-        }
-
-        public void OnUpdate(double diff)
-        {
-
         }
 
         public void OnStartCasting(Champion owner, Spell spell, AttackableUnit target)
@@ -44,14 +37,19 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var ap = owner.Stats.AbilityPower.Total * 0.8f;
+            var ap = owner.GetStats().AbilityPower.Total * 0.8f;
             var damage = 80 + (spell.Level - 1) * 50 + ap;
             target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
             var slowDuration = new[] {0, 1, 1.25f, 1.5f, 1.75f, 2}[spell.Level];
-            ApiFunctionManager.AddBuff("Slow", slowDuration, 1, (ObjAiBase) target, owner);
+            ApiFunctionManager.AddBuff("Slow", slowDuration, 1, (ObjAIBase) target, owner);
             ApiFunctionManager.AddParticleTarget(owner, "caitlyn_entrapment_tar.troy", target);
             ApiFunctionManager.AddParticleTarget(owner, "caitlyn_entrapment_slow.troy", target);
-            projectile.SetToRemove();
+            projectile.setToRemove();
+        }
+
+        public void OnUpdate(double diff)
+        {
+
         }
     }
 }

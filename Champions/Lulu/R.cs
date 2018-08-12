@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class LuluR : IGameScript
+    public class LuluR : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -19,13 +17,13 @@ namespace Spells
 
         public void OnStartCasting(Champion owner, Spell spell, AttackableUnit target)
         {
-            var p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_R_cas.troy", target, 1);
-            var buff = ((ObjAiBase) target).AddBuffGameScript("LuluR", "LuluR", spell);
-            var visualBuff = ApiFunctionManager.AddBuffHudVisual("LuluR", 7.0f, 1, owner);
+            Particle p = ApiFunctionManager.AddParticleTarget(owner, "Lulu_R_cas.troy", target, 1);
+            var buff = ((ObjAIBase) target).AddBuffGameScript("LuluR", "LuluR", spell);
+            var visualBuff = ApiFunctionManager.AddBuffHUDVisual("LuluR", 7.0f, 1, owner);
             ApiFunctionManager.CreateTimer(7.0f, () =>
             {
                 ApiFunctionManager.RemoveParticle(p);
-                ApiFunctionManager.RemoveBuffHudVisual(visualBuff);
+                ApiFunctionManager.RemoveBuffHUDVisual(visualBuff);
                 owner.RemoveBuffGameScript(buff);
                 ApiFunctionManager.AddParticleTarget(owner, "Lulu_R_expire.troy", target, 1);
             });

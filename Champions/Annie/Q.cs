@@ -1,13 +1,11 @@
+using LeagueSandbox.GameServer.Logic.GameObjects;
 using LeagueSandbox.GameServer.Logic.API;
 using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits;
-using LeagueSandbox.GameServer.Logic.GameObjects.AttackableUnits.AI;
-using LeagueSandbox.GameServer.Logic.GameObjects.Missiles;
-using LeagueSandbox.GameServer.Logic.GameObjects.Spells;
 using LeagueSandbox.GameServer.Logic.Scripting.CSharp;
 
 namespace Spells
 {
-    public class Disintegrate : IGameScript
+    public class Disintegrate : GameScript
     {
         public void OnActivate(Champion owner)
         {
@@ -28,30 +26,30 @@ namespace Spells
 
         public void ApplyEffects(Champion owner, AttackableUnit target, Spell spell, Projectile projectile)
         {
-            var ap = owner.Stats.AbilityPower.Total * 0.8f;
+            var ap = owner.GetStats().AbilityPower.Total * 0.8f;
             var damage = 45 + spell.Level * 35 + ap;
-            if (target != null && !target.IsDead)
+            if (target != null && !ApiFunctionManager.IsDead(target))
             {
                 target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL,
                     false);
                 if (target.IsDead)
                 {
-                    spell.LowerCooldown(0, spell.GetCooldown());
+                    spell.LowerCooldown(0, spell.getCooldown());
                     float manaToRecover = 55 + spell.Level * 5;
-                    var newMana = owner.Stats.CurrentMana + manaToRecover;
-                    var maxMana = owner.Stats.ManaPoints.Total;
+                    var newMana = owner.GetStats().CurrentMana + manaToRecover;
+                    var maxMana = owner.GetStats().ManaPoints.Total;
                     if (newMana >= maxMana)
                     {
-                        owner.Stats.CurrentMana = maxMana;
+                        owner.GetStats().CurrentMana = maxMana;
                     }
                     else
                     {
-                        owner.Stats.CurrentMana = newMana;
+                        owner.GetStats().CurrentMana = newMana;
                     }
                 }
             }
 
-            projectile.SetToRemove();
+            projectile.setToRemove();
         }
 
         public void OnUpdate(double diff)
